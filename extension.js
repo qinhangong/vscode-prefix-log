@@ -61,7 +61,16 @@ function activate(context) {
                             e.replace(wrap.ran, wrap.txt);
                         })
                         .then(() => {
-                            currentEditor.selection = wrap.sel;
+                            currentEditor.selection = new vscode.Selection(
+                                new vscode.Position(
+                                    wrap.ran.start.line,
+                                    wrap.txt.length + wrap.ran.start.character
+                                ),
+                                new vscode.Position(
+                                    wrap.ran.start.line,
+                                    wrap.txt.length + wrap.ran.start.character
+                                )
+                            );
                         });
                 })
                 .catch(message => {
