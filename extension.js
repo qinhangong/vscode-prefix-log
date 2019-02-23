@@ -23,7 +23,7 @@ function activate(context) {
                 let sel = currentEditor.selection;
                 // const str = currentEditor._documentData._lines[0];
                 let len = sel.end.character - sel.start.character;
-                const reg = /[\s\S]+\.(log)$/;
+                const reg = /[\S]+\.(log)$/;
                 let ran =
                     len == 0
                         ? currentEditor.document.getWordRangeAtPosition(sel.anchor, reg)
