@@ -2,6 +2,11 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 
+// 打印操作系统主机名,先注释掉
+// const os = require('os');
+// let hostname = os.hostname + '';
+// hostname = hostname.replace(/\.[\s\S]*/, '');
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
@@ -38,7 +43,7 @@ function activate(context) {
                     let idx = doc.lineAt(lineNumber).firstNonWhitespaceCharacterIndex;
                     let ind = doc.lineAt(lineNumber).text.substring(0, idx);
                     let wrapData = {
-                        txt: `console.log('${prefix}===>>>>>',${prefix});`,
+                        txt: `console.log('${prefix}========',${prefix});`,
                         item: item,
                         doc: doc,
                         ran: ran,
