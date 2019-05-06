@@ -2,7 +2,7 @@
     "name": "vscode-prefix-log",
     "displayName": "vscode-prefix-log",
     "description": "console with prefix",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "engines": {
         "vscode": "^1.31.0"
     },

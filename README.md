@@ -5,9 +5,11 @@ https://github.com/qinhangong/vscode-prefix-log
 ## Features
 
 ```
-input xxx.log;
+var str = "hello world";
+
+input str.log;
 
 shift+d;
 
-output console.log('xxx===>>>>>',xxx);
+output console.log('str========',str);
 ```

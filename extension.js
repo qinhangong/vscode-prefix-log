@@ -2,89 +2,64 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 
-// 打印操作系统主机名,先注释掉
-// const os = require('os');
-// let hostname = os.hostname + '';
-// hostname = hostname.replace(/\.[\s\S]*/, '');
-
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-
-let currentEditor;
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-    console.log('Congratulations, your extension "prefix-log" is now active!');
+    console.log('Congratulations, your extension "vscode-prefix-log" is now active!');
 
-    currentEditor = vscode.window.activeTextEditor;
+    let currentEditor = vscode.window.activeTextEditor;
 
     vscode.window.onDidChangeActiveTextEditor(editor => (currentEditor = editor));
 
     context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand('console.with.prefix', (editor, edit) => {
+        vscode.commands.registerTextEditorCommand('console.with.prefix', () => {
             new Promise((resolve, reject) => {
+                // 获取当前选中区域
                 let sel = currentEditor.selection;
-                // const str = currentEditor._documentData._lines[0];
-                let len = sel.end.character - sel.start.character;
                 const reg = /[\S]+\.(log)$/;
-                let ran =
-                    len == 0
-                        ? currentEditor.document.getWordRangeAtPosition(sel.anchor, reg)
-                        : new vscode.Range(sel.start, sel.end);
+                // 通过getWordRangeAtPosition方法得到单词范围对象
+                let ran = currentEditor.document.getWordRangeAtPosition(sel.anchor, reg);
                 if (ran == undefined) {
-                    reject('NO_WORD');
+                    reject('please use this statements：xxx.log');
                 } else {
-                    let doc = currentEditor.document;
-                    let lineNumber = ran.start.line;
-                    let item = doc.getText(ran);
+                    let doc = currentEditor.document; // 获取当前文档对象
+                    let line = ran.start.line; // 获取行数
+                    let item = doc.getText(ran); // 通过getText方法获取文本
                     let prefix = item.replace('.log', '');
-                    let idx = doc.lineAt(lineNumber).firstNonWhitespaceCharacterIndex;
-                    let ind = doc.lineAt(lineNumber).text.substring(0, idx);
+                    let idx = doc.lineAt(line).firstNonWhitespaceCharacterIndex; // 获取当前行的第一个非空字符的偏移量
                     let wrapData = {
-                        txt: `console.log('${prefix}========',${prefix});`,
-                        item: item,
-                        doc: doc,
-                        ran: ran,
-                        idx: idx,
-                        ind: ind,
-                        line: lineNumber,
-                        sel: sel,
-                        lastLine: doc.lineCount - 1 == lineNumber
+                        idx,
+                        ran,
+                        line,
+                        txt: `console.log('${prefix}========',${prefix});`
                     };
-                    if (reg.test(item)) {
-                        resolve(wrapData);
-                    } else {
-                        reject('please use this statements：xxx.log');
-                    }
+                    resolve(wrapData);
                 }
             })
                 .then(wrap => {
                     currentEditor
                         .edit(e => {
+                            // 将旧文本替换成新文本
                             e.replace(wrap.ran, wrap.txt);
                         })
                         .then(() => {
+                            // 把光标定位到末尾
                             currentEditor.selection = new vscode.Selection(
-                                new vscode.Position(
-                                    wrap.ran.start.line,
-                                    wrap.txt.length + wrap.ran.start.character
-                                ),
-                                new vscode.Position(
-                                    wrap.ran.start.line,
-                                    wrap.txt.length + wrap.ran.start.character
-                                )
+                                new vscode.Position(wrap.line, wrap.txt.length + wrap.idx),
+                                new vscode.Position(wrap.line, wrap.txt.length + wrap.idx)
                             );
                         });
                 })
                 .catch(message => {
-                    console.log('vscode-prefix-console REJECTED_PROMISE : ' + message);
+                    console.log('REJECTED_PROMISE:' + message);
                 });
         })
     );
 }
-exports.activate = activate;
 
 // this method is called when your extension is deactivated
 function deactivate() {}
