@@ -9,7 +9,7 @@ var str = "hello world";
 
 input str.log;
 
-ctrl+shift+d;
+alt+shift+d;
 
 output console.log('str========',str);
 ```
