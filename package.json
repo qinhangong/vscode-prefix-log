@@ -27,7 +27,7 @@
         "keybindings": [
             {
                 "command": "console.with.prefix",
-                "key": "Shift+d",
+                "key": "Ctrl+Shift+d",
                 "when": "editorTextFocus"
             }
         ]
